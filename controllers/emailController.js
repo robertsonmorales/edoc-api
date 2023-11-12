@@ -7,12 +7,14 @@ const {
     EMAIL_HOST, 
     EMAIL_USERNAME, 
     EMAIL_PASSWORD,
-    EMAIL_PORT
+    EMAIL_PORT,
+    ENABLE_TLS
 } = process.env;
 
 const transporter = nodemailer.createTransport({
     host: EMAIL_HOST,
     port: EMAIL_USERNAME,
+    secure: ENABLE_TLS, // 
     auth: {
       user: EMAIL_PASSWORD,
       pass: EMAIL_PORT
