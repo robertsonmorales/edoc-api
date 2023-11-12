@@ -4,18 +4,18 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 
 const { 
-    ETHEREAL_HOST, 
-    ETHEREAL_USERNAME, 
-    ETHEREAL_PASSWORD,
-    ETHEREAL_PORT
+    EMAIL_HOST, 
+    EMAIL_USERNAME, 
+    EMAIL_PASSWORD,
+    EMAIL_PORT
 } = process.env;
 
 const transporter = nodemailer.createTransport({
-    host: ETHEREAL_HOST,
-    port: ETHEREAL_PORT,
+    host: EMAIL_HOST,
+    port: EMAIL_USERNAME,
     auth: {
-      user: ETHEREAL_USERNAME,
-      pass: ETHEREAL_PASSWORD
+      user: EMAIL_PASSWORD,
+      pass: EMAIL_PORT
     }
 });
 
