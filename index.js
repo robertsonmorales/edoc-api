@@ -7,11 +7,12 @@ const app = express();
 const paymentController = require('./controllers/paymentController');
 const emailController = require('./controllers/emailController');
 
-cors.apply(app, {
-    origin: true,
-    credentials: true,
+const corsOptions = {
+    origin: 'http://localhost:8080',
     methods: ['GET', 'POST']
-});
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
