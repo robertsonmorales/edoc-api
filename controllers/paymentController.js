@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { v4: uuidv4 } = require('uuid');
 const express = require('express');
 const router = express.Router();
 
@@ -14,32 +15,25 @@ const generateAccessToken = async () => {
             throw new Error("MISSING_API_CREDENTIALS");
         }
 
-        const auth = Buffer.from(
-            PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET,
-          ).toString("base64");
+        const auth = Buffer.from(PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET).toString("base64");
         const response = await fetch(`${ENDPOINT_URL}/v1/oauth2/token`, {
             method: 'POST',
             headers: { 
-                // 'Content-Type': 'x-www-form-urlencoded',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `Basic ${auth}`
             },
             body: 'grant_type=client_credentials'
         });
 
-        const data = await response.json()
+        const data = await response.json();
         return data.access_token;
 
     }catch (err) {
-        console.error("Failed to generate Access Token:", err);
+        throw new Error("Failed to generate Access Token:", err);
     }
 }
 
 const createOrder = async (cart) => {
-    console.log(
-        "shopping cart information passed from the frontend createOrder() callback:",
-        cart,
-    );
-
     const access_token = await generateAccessToken();
     const url = `${ENDPOINT_URL}/v2/checkout/orders`;
 
@@ -58,7 +52,7 @@ const createOrder = async (cart) => {
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${access_token}`,
-            // 'PayPay-Request-Id': generate_random_uuid()
+            'PayPay-Request-Id': uuidv4()
         },
         body: JSON.stringify(payload)
     });
@@ -72,8 +66,11 @@ const captureOrder = async (orderID) => {
 
     const response = await fetch(url, {
         method: 'POST',
-        "Content-Type": 'application/json',
-        Authorization: `Bearer ${access_token}`
+        headers: {
+            "Content-Type": 'application/json',
+            'PayPay-Request-Id': uuidv4(),
+            Authorization: `Bearer ${access_token}`
+        }
     });
 
     return handleResponse(response);
@@ -82,6 +79,7 @@ const captureOrder = async (orderID) => {
 async function handleResponse(response){
     try {
         const jsonResponse = await response.json();
+
         return {
             jsonResponse,
             httpStatusCode: response.status,
@@ -98,9 +96,8 @@ router.post('/orders', async (req, res) => {
         const { jsonResponse, httpStatusCode } = await createOrder(cart);
         res.status(httpStatusCode).json(jsonResponse);
 
-    } catch (error) {
-        console.error("Failed to create order:", error);
-        res.status(500).json({ error: "Failed to create order." });
+    } catch (err) {
+        res.status(500).json({ err: "Failed to create order." });
     }
 });
 
@@ -110,9 +107,8 @@ router.post('/orders/:orderID/capture', async (req, res) => {
         const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
         res.status(httpStatusCode).json(jsonResponse);
 
-    } catch (error) {
-        console.error("Failed to create order:", error);
-        res.status(500).json({ error: "Failed to capture order." });
+    } catch (err) {
+        res.status(500).json({ err: "Failed to capture order." });
     }
 });
 

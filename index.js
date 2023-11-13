@@ -7,8 +7,6 @@ const app = express();
 const paymentController = require('./controllers/paymentController');
 const emailController = require('./controllers/emailController');
 
-// console.log(emailController instanceof express.Router);
-
 cors.apply(app, {
     origin: true,
     credentials: true,
