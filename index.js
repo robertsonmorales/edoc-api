@@ -8,7 +8,7 @@ const paymentController = require('./controllers/paymentController');
 const emailController = require('./controllers/emailController');
 
 const corsOptions = {
-    origin: 'http://localhost:8080',
+    origin: ['http://localhost:8080', 'http://edoc.infinityfreeapp.com'],
     methods: ['GET', 'POST']
 };
 
