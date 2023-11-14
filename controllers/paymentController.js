@@ -37,16 +37,15 @@ const createOrder = async (order) => {
     const access_token = await generateAccessToken();
     const url = `${ENDPOINT_URL}/v2/checkout/orders`;
 
-    const payload = order;
-    // {
-    //     intent: "CAPTURE",
-    //     purchase_units: [{
-    //         amount: {
-    //             currency_code: 'USD',
-    //             value: "100.00"
-    //         }
-    //     }]
-    // }
+    const payload = {
+        intent: "CAPTURE",
+        purchase_units: [{
+            amount: {
+                currency_code: 'USD',
+                value: order[0].value
+            }
+        }]
+    }
 
     const response = await fetch(url, {
         method: 'POST',
