@@ -28,7 +28,8 @@ router.post('/send', (req, res) => {
             }
         
             return res.status(200).json({
-                message: `Email sent: ${info.messageId}`
+                success: true,
+                message: `Email sent: ${info.messageId}`,
             });
         });
     } catch (error) {
