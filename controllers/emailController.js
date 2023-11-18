@@ -4,10 +4,10 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 
 const { 
-    EMAIL_HOST, 
-    EMAIL_USERNAME, 
-    EMAIL_PASSWORD,
-    EMAIL_PORT,
+    EMAIL_HOST = "sandbox.smtp.mailtrap.io", 
+    EMAIL_USERNAME = "ff7565c66e1aba", 
+    EMAIL_PASSWORD = "ae595da01d0990",
+    EMAIL_PORT = 2525,
 } = process.env;
 
 const transporter = nodemailer.createTransport({
@@ -28,7 +28,8 @@ router.post('/send', (req, res) => {
             }
         
             return res.status(200).json({
-                message: `Email sent: ${info.messageId}`
+                success: true,
+                message: `Email sent: ${info.messageId}`,
             });
         });
     } catch (error) {

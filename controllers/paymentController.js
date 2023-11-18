@@ -33,7 +33,7 @@ const generateAccessToken = async () => {
     }
 }
 
-const createOrder = async (cart) => {
+const createOrder = async (order) => {
     const access_token = await generateAccessToken();
     const url = `${ENDPOINT_URL}/v2/checkout/orders`;
 
@@ -42,7 +42,7 @@ const createOrder = async (cart) => {
         purchase_units: [{
             amount: {
                 currency_code: 'USD',
-                value: "100.00"
+                value: order[0].value
             }
         }]
     }
@@ -92,8 +92,8 @@ async function handleResponse(response){
 
 router.post('/orders', async (req, res) => {
     try {
-        const { cart } = req.body;
-        const { jsonResponse, httpStatusCode } = await createOrder(cart);
+        const { order } = req.body;
+        const { jsonResponse, httpStatusCode } = await createOrder(order);
         res.status(httpStatusCode).json(jsonResponse);
 
     } catch (err) {
